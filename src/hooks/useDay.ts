@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useLiveQuery } from "dexie-react-hooks";
 import { db } from "../db/database";
 import type { Habit } from "../types";
@@ -13,16 +14,37 @@ export function useDay(date: string, habits: Habit[]) {
     [date]
   );
 
-  async function toggleHabit(habitId: number) {
-    const existing = await db.habitEntries
-      .where("[habitId+date]")
-      .equals([habitId, date])
-      .first();
+  // Optimistic state: habitId → completed, cleared once Dexie confirms
+  const [optimistic, setOptimistic] = useState<Map<number, boolean>>(new Map());
 
-    if (existing) {
-      await db.habitEntries.update(existing.id!, { completed: !existing.completed });
-    } else {
-      await db.habitEntries.add({ habitId, date, completed: true });
+  // When Dexie delivers updated entries, wipe the optimistic overrides
+  useEffect(() => {
+    setOptimistic(new Map());
+  }, [entries]);
+
+  async function toggleHabit(habitId: number) {
+    // Flip immediately so the tick appears without waiting for DB round-trip
+    const currentValue = dbMap.get(habitId) ?? false;
+    setOptimistic((prev) => new Map(prev).set(habitId, !currentValue));
+
+    try {
+      const existing = await db.habitEntries
+        .where("[habitId+date]")
+        .equals([habitId, date])
+        .first();
+
+      if (existing) {
+        await db.habitEntries.update(existing.id!, { completed: !existing.completed });
+      } else {
+        await db.habitEntries.add({ habitId, date, completed: true });
+      }
+    } catch {
+      // Revert optimistic update on failure
+      setOptimistic((prev) => {
+        const next = new Map(prev);
+        next.delete(habitId);
+        return next;
+      });
     }
   }
 
@@ -44,10 +66,16 @@ export function useDay(date: string, habits: Habit[]) {
     }
   }
 
-  // Build a map of habitId → completed for quick lookup
-  const completionMap = new Map(
+  // DB-confirmed state
+  const dbMap = new Map(
     (entries ?? []).map((e) => [e.habitId, e.completed])
   );
+
+  // Merge: optimistic overrides DB until Dexie confirms
+  const completionMap = new Map(dbMap);
+  for (const [habitId, completed] of optimistic) {
+    completionMap.set(habitId, completed);
+  }
 
   const completedCount = habits.filter(
     (h) => completionMap.get(h.id!) === true

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { useHabits } from "./hooks/useHabits";
 import { useDay } from "./hooks/useDay";
+import { useInstallPrompt } from "./hooks/useInstallPrompt";
 import { HabitRow } from "./components/HabitRow";
 import { HabitManager } from "./components/HabitManager";
 import { MoodPicker } from "./components/MoodPicker";
@@ -35,6 +36,7 @@ export default function App() {
   const [journalText, setJournalText] = useState("");
 
   const { habits, loading: habitsLoading, addHabit, deleteHabit } = useHabits();
+  const { canInstall, install } = useInstallPrompt();
   const { journal, completionMap, completedCount, toggleHabit, saveJournal, setMood } =
     useDay(dateStr, habits);
 
@@ -150,6 +152,11 @@ export default function App() {
         {!isToday && (
           <button className="btn btn-ghost btn-sm" onClick={() => setDateStr(toDateStr(new Date()))}>
             Back to today
+          </button>
+        )}
+        {canInstall && (
+          <button className="icon-btn install-btn" onClick={install} title="Install app">
+            ⊕
           </button>
         )}
         <button className="icon-btn yaml-btn" onClick={() => setShowYaml(true)} title="Export / Import">

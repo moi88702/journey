@@ -21,5 +21,5 @@ export function useHabits() {
     });
   }
 
-  return { habits: habits ?? [], addHabit, updateHabit, deleteHabit };
+  return { habits: habits ?? [], loading: habits === undefined, addHabit, updateHabit, deleteHabit };
 }

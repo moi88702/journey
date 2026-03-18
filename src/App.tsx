@@ -34,7 +34,7 @@ export default function App() {
   const [showYaml, setShowYaml] = useState(false);
   const [journalText, setJournalText] = useState("");
 
-  const { habits, addHabit, deleteHabit } = useHabits();
+  const { habits, loading: habitsLoading, addHabit, deleteHabit } = useHabits();
   const { journal, completionMap, completedCount, toggleHabit, saveJournal, setMood } =
     useDay(dateStr, habits);
 
@@ -61,6 +61,9 @@ export default function App() {
   const isToday = dateStr === toDateStr(new Date());
   const totalHabits = habits.length;
   const pct = totalHabits ? Math.round((completedCount / totalHabits) * 100) : 0;
+
+  // Hold render until IndexedDB is ready — prevents the empty-state flash on load
+  if (habitsLoading) return null;
 
   return (
     <div className="app">

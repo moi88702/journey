@@ -21,5 +21,14 @@ export function useHabits() {
     });
   }
 
-  return { habits: habits ?? [], loading: habits === undefined, addHabit, updateHabit, deleteHabit };
+  // Accepts a reordered array and persists the new `order` values
+  async function reorderHabits(reordered: Habit[]) {
+    await db.transaction("rw", db.habits, async () => {
+      for (let i = 0; i < reordered.length; i++) {
+        await db.habits.update(reordered[i].id!, { order: i });
+      }
+    });
+  }
+
+  return { habits: habits ?? [], loading: habits === undefined, addHabit, updateHabit, deleteHabit, reorderHabits };
 }

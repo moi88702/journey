@@ -35,7 +35,7 @@ export default function App() {
   const [showYaml, setShowYaml] = useState(false);
   const [journalText, setJournalText] = useState("");
 
-  const { habits, loading: habitsLoading, addHabit, deleteHabit } = useHabits();
+  const { habits, loading: habitsLoading, addHabit, deleteHabit, reorderHabits } = useHabits();
   const { canInstall, install } = useInstallPrompt();
   const { journal, completionMap, completedCount, toggleHabit, saveJournal, setMood } =
     useDay(dateStr, habits);
@@ -169,6 +169,7 @@ export default function App() {
           habits={habits}
           onAdd={addHabit}
           onDelete={deleteHabit}
+          onReorder={reorderHabits}
           onClose={() => setShowManager(false)}
         />
       )}

@@ -2,10 +2,12 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { useHabits } from "./hooks/useHabits";
 import { useDay } from "./hooks/useDay";
 import { useInstallPrompt } from "./hooks/useInstallPrompt";
+import { useTodos } from "./hooks/useTodos";
 import { HabitRow } from "./components/HabitRow";
 import { HabitManager } from "./components/HabitManager";
 import { MoodPicker } from "./components/MoodPicker";
 import { YamlModal } from "./components/YamlModal";
+import { TodoSection } from "./components/TodoSection";
 
 function toDateStr(d: Date) {
   return d.toISOString().split("T")[0];
@@ -36,6 +38,7 @@ export default function App() {
   const [journalText, setJournalText] = useState("");
 
   const { habits, loading: habitsLoading, addHabit, deleteHabit, reorderHabits } = useHabits();
+  const { todos, addTodo, toggleTodo, deleteTodo, reorderTodos } = useTodos();
   const { canInstall, install } = useInstallPrompt();
   const { journal, completionMap, completedCount, toggleHabit, saveJournal, setMood } =
     useDay(dateStr, habits);
@@ -124,6 +127,15 @@ export default function App() {
             </ul>
           )}
         </section>
+
+        {/* Todos */}
+        <TodoSection
+          todos={todos}
+          onAdd={addTodo}
+          onToggle={toggleTodo}
+          onDelete={deleteTodo}
+          onReorder={reorderTodos}
+        />
 
         {/* Mood */}
         <section className="card">

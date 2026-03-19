@@ -130,6 +130,29 @@ body {
 .habit-name { flex: 1; font-size: 15px; }
 .habit-streak { font-size: 12px; color: var(--muted); white-space: nowrap; }
 
+/* ── Todo section ── */
+.todo-filters { display: flex; gap: 4px; }
+.todo-filter-btn {
+  padding: 4px 10px; font-size: 12px; border-radius: 6px;
+  background: none; border: 1px solid var(--border);
+  color: var(--muted); cursor: pointer; white-space: nowrap;
+  transition: background .15s, color .15s;
+}
+.todo-filter-btn:hover { color: var(--text); background: var(--surface2); }
+.todo-filter-btn.active { background: var(--accent); border-color: var(--accent); color: white; }
+.todo-add-row { display: flex; gap: 8px; margin-bottom: 8px; }
+.todo-input { flex: 1; margin-bottom: 0; }
+.todo-list { list-style: none; display: flex; flex-direction: column; }
+.todo-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 0; border-bottom: 1px solid var(--border);
+}
+.todo-row:last-child { border-bottom: none; }
+.todo-text { flex: 1; font-size: 15px; }
+.todo-done { color: var(--muted); text-decoration: line-through; }
+.todo-delete { opacity: 0; transition: opacity .15s; font-size: 13px; color: var(--muted); }
+.todo-row:hover .todo-delete { opacity: 1; }
+
 /* ── Mood picker ── */
 .mood-picker {
   display: flex;

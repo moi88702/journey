@@ -1,10 +1,11 @@
 import Dexie, { type Table } from "dexie";
-import type { Habit, HabitEntry, JournalEntry } from "../types";
+import type { Habit, HabitEntry, JournalEntry, Todo } from "../types";
 
 class JournalDatabase extends Dexie {
   habits!: Table<Habit>;
   habitEntries!: Table<HabitEntry>;
   journal!: Table<JournalEntry>;
+  todos!: Table<Todo>;
 
   constructor() {
     super("MoiJournal");
@@ -12,6 +13,12 @@ class JournalDatabase extends Dexie {
       habits:       "++id, order, createdAt",
       habitEntries: "++id, [habitId+date], date, habitId",
       journal:      "++id, &date",
+    });
+    this.version(2).stores({
+      habits:       "++id, order, createdAt",
+      habitEntries: "++id, [habitId+date], date, habitId",
+      journal:      "++id, &date",
+      todos:        "++id, order, completed, createdAt",
     });
   }
 }

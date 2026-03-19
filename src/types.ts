@@ -22,6 +22,14 @@ export interface JournalEntry {
   updatedAt: number;
 }
 
+export interface Todo {
+  id?: number;
+  text: string;
+  completed: boolean;
+  order: number;
+  createdAt: number;
+}
+
 // YAML export shape
 export type YamlExport = {
   exportedAt: string;

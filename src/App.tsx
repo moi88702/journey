@@ -8,6 +8,7 @@ import { HabitManager } from "./components/HabitManager";
 import { MoodPicker } from "./components/MoodPicker";
 import { YamlModal } from "./components/YamlModal";
 import { TodoSection } from "./components/TodoSection";
+import { ErrorBoundary } from "./components/ErrorBoundary";
 
 function toDateStr(d: Date) {
   return d.toISOString().split("T")[0];
@@ -129,15 +130,17 @@ export default function App() {
         </section>
 
         {/* Todos */}
-        <TodoSection
-          todos={todos}
-          dateStr={dateStr}
-          isToday={isToday}
-          onAdd={addTodo}
-          onToggle={toggleTodo}
-          onDelete={deleteTodo}
-          onReorder={reorderTodos}
-        />
+        <ErrorBoundary>
+          <TodoSection
+            todos={todos}
+            dateStr={dateStr}
+            isToday={isToday}
+            onAdd={addTodo}
+            onToggle={toggleTodo}
+            onDelete={deleteTodo}
+            onReorder={reorderTodos}
+          />
+        </ErrorBoundary>
 
         {/* Mood */}
         <section className="card">

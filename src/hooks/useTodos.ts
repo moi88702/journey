@@ -12,9 +12,13 @@ export function useTodos() {
 
   async function toggleTodo(id: number) {
     const existing = await todosDb.todos.get(id);
-    if (existing) {
-      await todosDb.todos.update(id, { completed: !existing.completed });
-    }
+    if (!existing) return;
+    const nowCompleted = !existing.completed;
+    const today = new Date().toISOString().split("T")[0];
+    await todosDb.todos.update(id, {
+      completed: nowCompleted,
+      completedAt: nowCompleted ? today : undefined,
+    });
   }
 
   async function deleteTodo(id: number) {

@@ -131,6 +131,8 @@ export default function App() {
         {/* Todos */}
         <TodoSection
           todos={todos}
+          dateStr={dateStr}
+          isToday={isToday}
           onAdd={addTodo}
           onToggle={toggleTodo}
           onDelete={deleteTodo}

@@ -26,6 +26,7 @@ export interface Todo {
   id?: number;
   text: string;
   completed: boolean;
+  completedAt?: string;  // YYYY-MM-DD — the date it was marked done
   order: number;
   createdAt: number;
 }

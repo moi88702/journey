@@ -115,12 +115,12 @@ export function TodoSection({ todos, dateStr, isToday, onAdd, onToggle, onDelete
     inputRef.current?.focus();
   }
 
-  // For past-day view: only show todos that existed on that day
+  // For past-day view: show todos that existed on that day OR were completed on that day
   const visibleTodos = isToday
     ? localTodos
     : localTodos.filter((t) => {
         const createdDate = new Date(t.createdAt).toISOString().split("T")[0]!;
-        return createdDate <= dateStr;
+        return createdDate <= dateStr || t.completedAt === dateStr;
       });
 
   // Completion status — today uses current state, past uses completedAt
